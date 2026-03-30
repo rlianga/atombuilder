@@ -2,14 +2,13 @@ package atombuilder;
 
 public enum atomSeries {
 	Reactive_nonmetal,
+	Noble_gas,
 	Alkali_metal,
 	Alkaline_earth_metal,
 	Transition_metal,
-	Metal,
+	Post_transition_metal,
 	Metalloid,
-	Halogen,
-	Noble_gas,
-	Lanthanoid,
-	Actinoid,
+	Lanthanide,
+	Actinide,
 	Unknown;
 }
