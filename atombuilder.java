@@ -12,7 +12,7 @@ public class atombuilder {
 		periodic.add(new Atom("Helium", 2, 2, 18, 1, atomSeries.Noble_gas, 7440597, -272.2, -268.928, "He"));
 		periodic.add(new Atom("Lithium", 3, 4, 1, 2, atomSeries.Alkali_metal, 7439932, 180.54, 1342, "Li"));
 		
-		
+		//need to database everything else (to i assume #118 and then it'll just say "unknown".....
 
 	}
 }
