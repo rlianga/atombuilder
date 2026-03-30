@@ -5,11 +5,11 @@ public class Atom {
 	String name;
 	int protons; 
 	int neutrons; 
-	int electrons; //procedural, but still here for simplicity
-	int group; //if 0:     series lanthanoid = output group Lanthanide    >>    actinide = Actinoid
+	int electrons;
+	int group; //if 0, is lanthanoid/actinoid
 	int period;
 	atomSeries series;
-	int casNumber; //exclude the dashes, they will be re-added in output.wWhen searching for cas number, will accept either with dashes or without them (but no inbetween)
+	int casNumber; //exclude the dashes
 	double meltingPoint; //celsius. 0 means n/a or unknown
 	double boilingPoint;
 	String abbreviation; //procedural unless overridden
@@ -36,7 +36,7 @@ public class Atom {
 	
 	public static String getGroup(Atom atom) {
 		if (atom.group == 0) {
-			if (atom.series.equals(atomSeries.Lanthanoid)) {
+			if (atom.series.equals(atomSeries.Lanthanide)) {
 				return "Lanthanide";
 			} else {
 				return "Actinide";
@@ -47,7 +47,7 @@ public class Atom {
 	}
 
 	public static char getBlock (Atom atom) {
-		if (atom.group == 0) { // 0 means lanthanide or actinide
+		if (atom.group == 0) {
 			return 'f';
 		} else if (3 <= atom.group || atom.group <= 12) {
 			return 'd';
