@@ -57,5 +57,30 @@ public class Atom {
 			return 's';
 		}
 	}
+	
+	public static String getSeriesString(atomSeries series) {
+		switch(series) {
+		case Reactive_nonmetal:
+			return "Reactive Nonmetal";
+		case Noble_gas:
+			return "Noble Gas";
+		case Alkali_metal:
+			return "Alkali Metal";
+		case Alkaline_earth_metal:
+			return "Alkaline Earth Metal";
+		case Transition_metal:
+			return "Transition Metal";
+		case Post_transition_metal:
+			return "Post Transition Metal";
+		case Metalloid:
+			return "Metalloid";
+		case Lanthanide:
+			return "Lanthanide";
+		case Actinide:
+			return "Actinide";
+		default:
+			return "Unknown";
+		}
+	}
 
 }

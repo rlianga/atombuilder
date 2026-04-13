@@ -129,7 +129,7 @@ public class atombuilder {
 		return list;
 	}
 	
-	public static int getShellElectrons(int electrons, int shell) { //TODO should return # of electrons in corresponding shell
+	public static int getShellElectrons(int electrons, int shell) { //TODO should return # of electrons in corresponding shell, DOES NOT WORK CURRENTLY
 		if (shell > 7 || electrons > 280) {
 			return -1; //too many
 		}
@@ -137,7 +137,7 @@ public class atombuilder {
 		int shellCapacity = 1;
 		int remainingElectrons = electrons;
 		for (int i = 1; i < shell; i++) {
-			shellCapacity *= (int) (2 * Math.pow(i, 2)); //BROKEN!!!!!!!!!! AHHHHHHHHH!!!!!!!!!!!!
+			shellCapacity *= (int) (2 * Math.pow(i, 2)); 
 			remainingElectrons -= shellCapacity;
 		}
 		return remainingElectrons;
@@ -161,10 +161,81 @@ public class atombuilder {
 		return (atom.protons * 1.00727) + (atom.neutrons * 1.00866) + (atom.electrons * 0.000549); //in AMU
 	}
 	
+	public static void updateElectrons(Atom atom, int electronCount) {
+		atom.electrons += electronCount;
+	}
+	
+	public static void updateProtons(Atom atom, int protonCount) {
+		atom.protons += protonCount;
+	}
+	
+	public static void updateNeutrons(Atom atom, int neutronCount) {
+		atom.neutrons += neutronCount;
+	}
+	
+	/* ---ALL SEARCH FUNCTIONS ARE TAKING STRING BECAUSE IT WILL BE USER INPUT--- */
+	
+	public static Atom searchForAtomIndex(ArrayList<Atom> populatedAtomList, String indexStr) { //searching by atomic number, proton count, electron count
+		try {
+			int index = Integer.parseInt(indexStr);
+			return populatedAtomList.get(index);
+		} 
+		catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static Atom searchForAtomName(ArrayList<Atom> populatedAtomList, String name) {
+		for (Atom currentAtom : populatedAtomList) {
+			if (currentAtom.name.equalsIgnoreCase(name)) {
+				return currentAtom;
+			}
+		}
+		return null;
+	}
+	
+	public static Atom searchForAtomAbbreviation(ArrayList<Atom> populatedAtomList, String abbreviation) {
+		for (Atom currentAtom : populatedAtomList) {
+			if (currentAtom.abbreviation.equalsIgnoreCase(abbreviation)) {
+				return currentAtom;
+			}
+		}
+		return null;
+	}
+	
+	public static Atom searchForAtomNeutrons(ArrayList<Atom> populatedAtomList, String neutronsStr) {
+		int neutrons = Integer.parseInt(neutronsStr);
+		if (neutrons == 0) {
+			return populatedAtomList.get(1); //only hydrogen has more protons than neutrons. also helps ignore neutronium
+		} else {
+			for (Atom currentAtom : populatedAtomList.subList(neutrons, populatedAtomList.size())) { //little faster starting at neutron index because there are generally more neutrons than protons
+				if (currentAtom.neutrons == neutrons) {
+					return currentAtom;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static Atom searchForAtomCAS(ArrayList<Atom> populatedAtomList, String casStr) {
+		int CAS = Integer.parseInt(casStr.replace("-", ""));
+		for (Atom currentAtom : populatedAtomList) {
+			if (currentAtom.casNumber == CAS) {
+				return currentAtom;
+			}
+		}
+		return null;
+	}
+	
 	public static void main (String[] args) {
-		ArrayList<Atom> periodic = new ArrayList<Atom>(); //index = atomic number = # protons
+		ArrayList<Atom> periodic = new ArrayList<Atom>();
 		populateAtomList(periodic);
 		
+		ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
+		
+		Atom displayAtom = periodic.get(1);
+		
+		System.out.println("getShellElectrons TEST CASES");
 		System.out.println("Amount of electrons in first orbital (1 electron): " + getShellElectrons(1,1));
 		System.out.println("Amount of electrons in first orbital (2 electrons): " + getShellElectrons(2,1));
 		System.out.println("Amount of electrons in first orbital (3 electrons): " + getShellElectrons(3,1));
@@ -173,14 +244,8 @@ public class atombuilder {
 		System.out.println("Amount of electrons in second orbital (10 electrons): " + getShellElectrons(10,2));
 		System.out.println("Amount of electrons in second orbital (7 electrons): " + getShellElectrons(7,2));
 		System.out.println("Amount of electrons in second orbital (40 electrons): " + getShellElectrons(40,2));
-		System.out.println("Amount of electrons in fourth orbital (1 electron): " + getShellElectrons(130,4));
-		System.out.println("Amount of electrons in seventh orbital (1 electron): " + getShellElectrons(250,7));
-		
-		System.out.println(isotopeNameStr(periodic.get(20))); 
-		
-		ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
-		
-		
+		System.out.println("Amount of electrons in fourth orbital (130 electrons): " + getShellElectrons(130,4));
+		System.out.println("Amount of electrons in seventh orbital (250 electrons): " + getShellElectrons(250,7));
 	}
 }
 //when searching for cas number, will accept either with dashes or without them (but no inbetween)
