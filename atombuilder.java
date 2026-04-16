@@ -208,7 +208,7 @@ public class atombuilder {
 		if (neutrons == 0) {
 			return populatedAtomList.get(1); //only hydrogen has more protons than neutrons. also helps ignore neutronium
 		} else {
-			for (Atom currentAtom : populatedAtomList.subList(neutrons, populatedAtomList.size())) { //little faster starting at neutron index because there are generally more neutrons than protons
+			for (Atom currentAtom : populatedAtomList) { 
 				if (currentAtom.neutrons == neutrons) {
 					return currentAtom;
 				}
@@ -234,6 +234,8 @@ public class atombuilder {
 		ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
 		
 		Atom displayAtom = periodic.get(1);
+
+		
 		
 		System.out.println("getShellElectrons TEST CASES");
 		System.out.println("Amount of electrons in first orbital (1 electron): " + getShellElectrons(1,1));
