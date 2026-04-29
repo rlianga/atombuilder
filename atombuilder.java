@@ -2,6 +2,7 @@ package atombuilder;
 
 import java.util.ArrayList;
 import java.lang.Math;
+import javax.swing.JFrame;
 
 public class atombuilder {	
 	
@@ -130,17 +131,18 @@ public class atombuilder {
 	}
 	
 	public static int getShellElectrons(int electrons, int shell) { //TODO should return # of electrons in corresponding shell, DOES NOT WORK CURRENTLY
-		if (shell > 7 || electrons > 280) {
-			return -1; //too many
+		if (shell > 7 || electrons > 280 || shell < 1 || electrons < 0) {
+			return -1; //too many or bad input
 		}
 		
-		int shellCapacity = 1;
-		int remainingElectrons = electrons;
-		for (int i = 1; i < shell; i++) {
-			shellCapacity *= (int) (2 * Math.pow(i, 2)); 
-			remainingElectrons -= shellCapacity;
+		int[] energyLevels = new int[7];
+		int currentLevel = 1;
+		int shellMax = 2;
+		
+		while (electrons > 0) {
+			shellMax *= 2 * Math.pow(currentLevel, 2);
 		}
-		return remainingElectrons;
+		return energyLevels[shell-1];
 	}
 	
 	public static String isotopeNameStr(Atom atom) {
@@ -206,7 +208,7 @@ public class atombuilder {
 	public static Atom searchForAtomNeutrons(ArrayList<Atom> populatedAtomList, String neutronsStr) {
 		int neutrons = Integer.parseInt(neutronsStr);
 		if (neutrons == 0) {
-			return populatedAtomList.get(1); //only hydrogen has more protons than neutrons. also helps ignore neutronium
+			return populatedAtomList.get(1); //ignores neutronium
 		} else {
 			for (Atom currentAtom : populatedAtomList) { 
 				if (currentAtom.neutrons == neutrons) {
@@ -234,7 +236,19 @@ public class atombuilder {
 		ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
 		
 		Atom displayAtom = periodic.get(1);
+		
+		
+		
+		JFrame appFrame = new JFrame();
+		
+		appFrame.setTitle("An Empty Frame");
 
+	    appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	     
+	    appFrame.setVisible(true);
+
+		
+		
 		
 		
 		System.out.println("getShellElectrons TEST CASES");

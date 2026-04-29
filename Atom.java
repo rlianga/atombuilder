@@ -1,6 +1,5 @@
 package atombuilder;
 
-// !!! this class would only be used for a database to be searched through. all final values then no? no need to account for strange user inputs!!!
 public class Atom {
 	String name;
 	int protons; 
@@ -9,12 +8,11 @@ public class Atom {
 	int group; //if 0, is lanthanoid/actinoid
 	int period;
 	atomSeries series;
-	int casNumber; //exclude the dashes
+	int casNumber; //excluding the dashes
 	double meltingPoint; //celsius. 0 means n/a or unknown
 	double boilingPoint;
 	String abbreviation; //procedural unless overridden
 
-	//constructor 
 	public Atom (String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint, String abbreviation) { 
 		this.name = name;
 		this.protons = protons; 
