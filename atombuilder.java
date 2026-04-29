@@ -1,8 +1,10 @@
 package atombuilder;
 
 import java.util.ArrayList;
-import java.lang.Math;
+
 import javax.swing.JFrame;
+
+import java.lang.Math;
 
 public class atombuilder {	
 	
@@ -236,19 +238,12 @@ public class atombuilder {
 		ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
 		
 		Atom displayAtom = periodic.get(1);
-		
-		
-		
-		JFrame appFrame = new JFrame();
-		
-		appFrame.setTitle("An Empty Frame");
 
-	    appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	     
-	    appFrame.setVisible(true);
+		gui myFrame = new gui();
 
-		
-		
+	    myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    myFrame.pack();
+	    myFrame.setVisible(true);
 		
 		
 		System.out.println("getShellElectrons TEST CASES");
@@ -264,6 +259,3 @@ public class atombuilder {
 		System.out.println("Amount of electrons in seventh orbital (250 electrons): " + getShellElectrons(250,7));
 	}
 }
-//when searching for cas number, will accept either with dashes or without them (but no inbetween)
-
-//obviously need to add safeguards for invalid inputs for all these functions, but the constructor should be fine as it’s only for databasing 
