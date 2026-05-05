@@ -142,36 +142,6 @@ public class atombuilder extends JFrame implements ActionListener{
 	public static int getShellElectrons(int electrons, int shell) { //TODO should return # of electrons in corresponding shell, DOES NOT WORK CURRENTLY
 		return -1;
 	}
-	
-	public static String isotopeNameStr(Atom atom) {
-		return atom.name + "-" + (atom.protons + atom.neutrons);
-	}
-	
-	public static String casNumberStr(Atom atom) {
-		String returnStr = Integer.toString(atom.casNumber);
-		int len = returnStr.length();
-		return returnStr.substring(0,len-3) + "-" + returnStr.substring(len-3,len-1) + "-" + returnStr.charAt(len-1);
-	}
-	
-	public static int getCharge(Atom atom) {
-		return atom.protons - atom.electrons;
-	}
-	
-	public static double getWeight (Atom atom) {
-		return (atom.protons * 1.00727) + (atom.neutrons * 1.00866) + (atom.electrons * 0.000549); //in AMU
-	}
-	
-	public static void updateElectrons(Atom atom, int electronCount) {
-		atom.electrons += electronCount;
-	}
-	
-	public static void updateProtons(Atom atom, int protonCount) {
-		atom.protons += protonCount;
-	}
-	
-	public static void updateNeutrons(Atom atom, int neutronCount) {
-		atom.neutrons += neutronCount;
-	}
 
 	public static Atom searchForAtomIndex(ArrayList<Atom> populatedAtomList, String indexStr) { //searching by atomic number, proton count, electron count
 		try {
@@ -250,7 +220,7 @@ public class atombuilder extends JFrame implements ActionListener{
 	      
 	      electronButton = new JButton("Add electron(1)");
 	      electronButton.addActionListener(e -> {
-	    	  atombuilder.updateElectrons(displayAtom, 1);
+	    	  displayAtom.updateElectrons(1);
 	    	  electronButton.setText("Add electron(" + displayAtom.electrons + ")");
 	      });
 
