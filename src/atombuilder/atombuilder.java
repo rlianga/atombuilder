@@ -202,7 +202,7 @@ public class atombuilder extends JFrame implements ActionListener {
 
 	public static Atom searchForAtomName(ArrayList<Atom> populatedAtomList, String name) {
 		for (Atom currentAtom : populatedAtomList) {
-			if (currentAtom.abbreviation.equalsIgnoreCase(name)) {
+			if (currentAtom.name.equalsIgnoreCase(name)) {
 				return currentAtom;
 			}
 		}
@@ -263,7 +263,7 @@ public class atombuilder extends JFrame implements ActionListener {
 
 	// top middle
 	JLabel fullNameLabel;
-	JLabel isotopeLabel; //TODO show and hide if isotope
+	JLabel isotopeLabel;
 	// TODO visuals and stuff
 
 	// bottom middle
@@ -283,6 +283,8 @@ public class atombuilder extends JFrame implements ActionListener {
 	private ArrayList<Atom> periodic;
 	private Atom displayAtom;
 	
+	boolean isIsotope = false;
+	
 	atombuilder() {
 		periodic = new ArrayList<Atom>();
 		populateAtomList(periodic);
@@ -298,31 +300,95 @@ public class atombuilder extends JFrame implements ActionListener {
 		
 		abbreviationLabel = new JLabel("Abbreviation");
 		abbreviationField = new JTextField(10);
-		/*
 		abbreviationField.setEditable(true);
-		abbreviationField.setText("");
 		abbreviationField.addActionListener(e -> {
 			Atom foundAtom = atombuilder.searchForAtomAbbreviation(periodic, abbreviationField.getText());
 			if (foundAtom != null) {
 				displayAtom = foundAtom;
+				updateInfo();
 			} else {
 				abbreviationField.setText("Could not find");
 			}
 		});
-		*/
+
 		nameLabel = new JLabel("Name");
 		nameField = new JTextField(10);
+		nameField.setEditable(true);
+		nameField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomName(periodic, nameField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				nameField.setText("Could not find");
+			}
+		});
+		
 		atomicNumberLabel = new JLabel("Atomic Number");
 		atomicNumberField = new JTextField(10);
+		atomicNumberField.setEditable(true);
+		atomicNumberField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomIndex(periodic, atomicNumberField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				atomicNumberField.setText("Could not find");
+			}
+		});
+		
 		CASLabel = new JLabel("CAS");
 		CASField = new JTextField(10);
+		CASField.setEditable(true);
+		CASField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomCAS(periodic, CASField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				CASField.setText("Could not find");
+			}
+		});
+		
 		protonsLabel = new JLabel("Protons");
 		protonsField = new JTextField(10);
+		protonsField.setEditable(true);
+		protonsField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomIndex(periodic, protonsField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				protonsField.setText("Could not find");
+			}
+		});
+		
 		neutronsLabel = new JLabel("Neutrons");
 		neutronsField = new JTextField(10);
+		neutronsField.setEditable(true);
+		neutronsField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomNeutrons(periodic, neutronsField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				neutronsField.setText("Could not find");
+			}
+		});
+		
 		electronsLabel = new JLabel("Electrons");
 		electronsField = new JTextField(10);
-
+		electronsField.setEditable(true);
+		electronsField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomIndex(periodic, electronsField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+				updateInfo();
+			} else {
+				electronsField.setText("Could not find");
+			}
+		});
+		
 		// top middle
 		fullNameLabel = new JLabel();
 		fullNameLabel.setFont(new Font("Verdana", Font.BOLD, 30));
@@ -333,36 +399,38 @@ public class atombuilder extends JFrame implements ActionListener {
 		addProtonButton = new JButton("Add proton");
 		addProtonButton.addActionListener(e -> {
 			displayAtom.updateProtons(1);
-			updateInfo(displayAtom);
+			displayAtom.name = searchForAtomIndex(periodic, Integer.toString(displayAtom.protons)).name;
+			updateInfo();
 		});
 		removeProtonButton = new JButton("Remove proton");
 		removeProtonButton.addActionListener(e -> {
 			displayAtom.updateProtons(-1);
-			updateInfo(displayAtom);
+			displayAtom.name = searchForAtomIndex(periodic, Integer.toString(displayAtom.protons)).name;
+			updateInfo();
 		});
 		
 		nosearchNeutronField = new JTextField(4);
 		addNeutronButton = new JButton("Add neutron");
 		addNeutronButton.addActionListener(e -> {
 			displayAtom.updateNeutrons(1);
-			updateInfo(displayAtom);
+			updateInfo();
 		});
 		removeNeutronButton = new JButton("Remove neutron");
 		removeNeutronButton.addActionListener(e -> {
 			displayAtom.updateNeutrons(-1);
-			updateInfo(displayAtom);
+			updateInfo();
 		});
 		
 		nosearchElectronField = new JTextField(4);
 		addElectronButton = new JButton("Add electron");
 		addElectronButton.addActionListener(e -> {
 			displayAtom.updateElectrons(1);
-			updateInfo(displayAtom);
+			updateInfo();
 		});
 		removeElectronButton = new JButton("Remove electron");
 		removeElectronButton.addActionListener(e -> {
 			displayAtom.updateElectrons(-1);
-			updateInfo(displayAtom);
+			updateInfo();
 		});
 		
 		// right side
@@ -443,27 +511,32 @@ public class atombuilder extends JFrame implements ActionListener {
 		layoutConst.insets = new Insets(-520,0,0,0);
 		add(infoTextArea, layoutConst);
 		
-		updateInfo(displayAtom);
+		updateInfo();
 	}
 
-	public void updateInfo(Atom atom) {
+	public void updateInfo() {
 		// left side
-		abbreviationField.setText(atom.abbreviation);
-		nameField.setText(atom.name);
-		atomicNumberField.setText(Integer.toString(atom.protons));
-		CASField.setText(atom.casNumberStr());
-		protonsField.setText(Integer.toString(atom.protons));
-		neutronsField.setText(Integer.toString(atom.neutrons));
-		electronsField.setText(Integer.toString(atom.electrons));
+		abbreviationField.setText(displayAtom.abbreviation);
+		nameField.setText(displayAtom.name);
+		atomicNumberField.setText(Integer.toString(displayAtom.protons));
+		CASField.setText(displayAtom.casNumberStr());
+		protonsField.setText(Integer.toString(displayAtom.protons));
+		neutronsField.setText(Integer.toString(displayAtom.neutrons));
+		electronsField.setText(Integer.toString(displayAtom.electrons));
 
 		// top middle
-		fullNameLabel.setText(atom.isotopeNameStr());
+		fullNameLabel.setText(displayAtom.isotopeNameStr());
+		if (isIsotope) {
+			isotopeLabel.setVisible(true);
+		} else {
+			isotopeLabel.setVisible(false);
+		}
 		// TODO visuals and stuff
 
 		// bottom middle
-		nosearchProtonField.setText(Integer.toString(atom.protons));
-		nosearchNeutronField.setText(Integer.toString(atom.neutrons));
-		nosearchElectronField.setText(Integer.toString(atom.electrons));
+		nosearchProtonField.setText(Integer.toString(displayAtom.protons));
+		nosearchNeutronField.setText(Integer.toString(displayAtom.neutrons));
+		nosearchElectronField.setText(Integer.toString(displayAtom.electrons));
 		if (displayAtom.protons < 1) { 
 			removeProtonButton.setVisible(false);
 		} else {
@@ -481,14 +554,14 @@ public class atombuilder extends JFrame implements ActionListener {
 		}
 		
 		// right side
-		infoTextArea.setText("Group: " + atom.getGroup() + 
-				   "\nPeriod: " + atom.period +
-				   "\nBlock: " + atom.getBlock() + " block" + 
-				   "\nSeries: " + atom.getSeriesString() + 
-				   "\nWeight: " + String.format("%.3f", atom.getWeight()) + 
-				   "\nCharge: " + atom.getCharge() + 
-				   "\nMelting Point: " + atom.meltingPoint + 
-				   "\nBoiling Point: " + atom.boilingPoint + "\n");
+		infoTextArea.setText("Group: " + displayAtom.getGroup() + //TODO make CAS and melting and boiling point ? if cannot find with the isotope and such
+				   "\nPeriod: " + displayAtom.period +
+				   "\nBlock: " + displayAtom.getBlock() + " block" + 
+				   "\nSeries: " + displayAtom.getSeriesString() + 
+				   "\nWeight: " + String.format("%.3f", displayAtom.getWeight()) + 
+				   "\nCharge: " + displayAtom.getCharge() + 
+				   "\nMelting Point: " + displayAtom.meltingPoint + 
+				   "\nBoiling Point: " + displayAtom.boilingPoint + "\n");
 	}
 
 	@Override
@@ -498,7 +571,8 @@ public class atombuilder extends JFrame implements ActionListener {
 	
 	public static void main(String[] args) {
 		atombuilder myFrame = new atombuilder();
-
+		
+		myFrame.setPreferredSize(new Dimension(700, 450));
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.pack();
 		myFrame.setVisible(true);
