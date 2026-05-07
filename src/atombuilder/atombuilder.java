@@ -325,7 +325,8 @@ public class atombuilder extends JFrame implements ActionListener {
 
 		// top middle
 		fullNameLabel = new JLabel();
-		isotopeLabel = new JLabel();
+		fullNameLabel.setFont(new Font("Verdana", Font.BOLD, 30));
+		isotopeLabel = new JLabel("Isotope");
 
 		// bottom middle
 		nosearchProtonField = new JTextField(4);
@@ -372,7 +373,6 @@ public class atombuilder extends JFrame implements ActionListener {
 		layoutConst = new GridBagConstraints();
 		layoutConst.gridx = 0;
 		layoutConst.gridy = 0;
-		//layoutConst.insets = new Insets(0,0,0,0);
 		
 		// left side
 		add(AtomSearch, layoutConst);
@@ -405,7 +405,14 @@ public class atombuilder extends JFrame implements ActionListener {
 		layoutConst.gridy++;
 		add(electronsField, layoutConst);
 		
-		// middle
+		//top middle
+		layoutConst.insets = new Insets(-220,0,0,-480);
+		add(isotopeLabel, layoutConst);
+		layoutConst.insets = new Insets(-270,0,0,-480);
+		add(fullNameLabel, layoutConst);
+		layoutConst.insets = new Insets(0,0,0,0);
+		
+		// bottom middle
 		layoutConst.gridx++;
 		layoutConst.gridy++;
 		add(nosearchProtonField, layoutConst);
@@ -422,12 +429,6 @@ public class atombuilder extends JFrame implements ActionListener {
 		layoutConst.gridy++;
 		add(removeNeutronButton, layoutConst);
 		
-		layoutConst.gridy -= 4; //fit in top middle label
-		add(isotopeLabel, layoutConst);
-		layoutConst.gridy--;
-		add(fullNameLabel, layoutConst);
-		layoutConst.gridy += 5;
-		
 		layoutConst.gridx++;
 		layoutConst.gridy-= 2;
 		add(nosearchElectronField, layoutConst);
@@ -438,13 +439,14 @@ public class atombuilder extends JFrame implements ActionListener {
 		
 		// right side
 		layoutConst.gridx++;
-		layoutConst.gridy = 0;
+		layoutConst.gridy++;
+		layoutConst.insets = new Insets(-520,0,0,0);
 		add(infoTextArea, layoutConst);
 		
 		updateInfo(displayAtom);
 	}
 
-	public void updateInfo(Atom atom) { //TODO hide remove button if 0 count
+	public void updateInfo(Atom atom) {
 		// left side
 		abbreviationField.setText(atom.abbreviation);
 		nameField.setText(atom.name);
@@ -483,10 +485,10 @@ public class atombuilder extends JFrame implements ActionListener {
 				   "\nPeriod: " + atom.period +
 				   "\nBlock: " + atom.getBlock() + " block" + 
 				   "\nSeries: " + atom.getSeriesString() + 
-				   "\nWeight: " + atom.getWeight() + 
+				   "\nWeight: " + String.format("%.3f", atom.getWeight()) + 
 				   "\nCharge: " + atom.getCharge() + 
 				   "\nMelting Point: " + atom.meltingPoint + 
-				   "\nBoiling Point: " + atom.boilingPoint);
+				   "\nBoiling Point: " + atom.boilingPoint + "\n");
 	}
 
 	@Override
