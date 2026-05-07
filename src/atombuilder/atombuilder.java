@@ -6,18 +6,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class atombuilder extends JFrame implements ActionListener{	
-	private JLabel searchLabel;
-	private JTextField searchField;
-	private JLabel nameLabel;
-	private JLabel infoLabel;
-	private JButton electronButton;
-	private JButton protonButton;
-	private JButton neutronButton; 
-	
-	public static ArrayList<Atom> populateAtomList(ArrayList<Atom> list) {
-		//String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint, String abbreviation
-		list.add(new Atom("Neutronium", 0, 0, 0, 0, atomSeries.Unknown, 12586311, 0, 0, "Nu")); //filling index 0 for simplicity
+public class atombuilder extends JFrame implements ActionListener {
+
+	private static final long serialVersionUID = 1L; //complier kept asking for this. no idea what it does
+
+	public static void populateAtomList(ArrayList<Atom> list) {
+		// String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint, String abbreviation
+		list.add(new Atom("Neutronium", 0, 0, 0, 0, atomSeries.Unknown, 12586311, 0, 0, "Nu")); // filling index 0 for simplicity
 		list.add(new Atom("Hydrogen", 1, 0, 1, 1, atomSeries.Reactive_nonmetal, 1333740, -259.16, -252.879));
 		list.add(new Atom("Helium", 2, 2, 18, 1, atomSeries.Noble_gas, 7440597, -272.2, -268.928, "He"));
 		list.add(new Atom("Lithium", 3, 4, 1, 2, atomSeries.Alkali_metal, 7439932, 180.54, 1342, "Li"));
@@ -136,39 +131,36 @@ public class atombuilder extends JFrame implements ActionListener{
 		list.add(new Atom("Livermorium", 116, 177, 16, 7, atomSeries.Post_transition_metal, 54037999, 0, 0, "Lv"));
 		list.add(new Atom("Tennessine", 117, 177, 17, 7, atomSeries.Unknown, 54100000, 0, 0, "Ts"));
 		list.add(new Atom("Oganesson", 118, 176, 18, 7, atomSeries.Noble_gas, 54100001, 0, 0, "Og"));
-		return list;
 	}
-	
-	public static int getShellElectrons(int shell, int electrons) { //TODO should return # of electrons in corresponding shell, DOES NOT WORK CURRENTLY, HARDCODED
-		electrons = 0;
-		
+
+	public static int getShellElectrons(int electrons, int shell) { // TODO should return # of electrons in corresponding shell
 		int period = 6;
 		int totalElectrons = 79;
 		int remainingElectrons = electrons;
 		int totalAddedElectrons = 0;
 		int counter = 0;
-		
-		int[] currentShell = new int[period + 1]; 
-		
+
+		int[] currentShell = new int[period + 1];
+
 		for (shell = 1; shell <= period; shell++) {
-			//This IF statement is where the electron incrementing begins
+			// This IF statement is where the electron incrementing begins
 			if (electrons < totalElectrons) {
 				electrons = (int) (2 * Math.pow(shell, 2));
 				currentShell[shell] = electrons;
 			}
 			totalAddedElectrons += currentShell[shell];
-			
-			//This if statement ensures that electron count does not go past total electron count
-			if (totalAddedElectrons > totalElectrons) {				
-				//Decreases amount of electrons in a shell
+
+			// This if statement ensures that electron count does not go past total electron count
+			if (totalAddedElectrons > totalElectrons) {
+				// Decreases amount of electrons in a shell
 				for (int i = 0; totalAddedElectrons > totalElectrons; i++) {
 					totalAddedElectrons -= currentShell[shell];
 					electrons = (int) (2 * Math.pow((shell - i), 2));
 					currentShell[shell] = electrons;
 					totalAddedElectrons += currentShell[shell];
 				}
-				
-				//This ensures that the last shell contains at least 1 electron and does not go past total electron count
+
+				// This ensures that the last shell contains at least 1 electron and does not go past total electron count
 				if (shell == period && totalAddedElectrons < totalElectrons) {
 					electrons = 0;
 					totalAddedElectrons -= currentShell[shell];
@@ -179,8 +171,9 @@ public class atombuilder extends JFrame implements ActionListener{
 						totalAddedElectrons++;
 					}
 				}
-				
-				//If last shell contains more than 2 electrons, remove excessive electrons and add it to counter, which will later be added to the shell before the last
+
+				// If last shell contains more than 2 electrons, remove excessive electrons and
+				// add it to counter, which will later be added to the shell before the last
 				while (shell == period && totalAddedElectrons == totalElectrons && currentShell[shell] > 2) {
 					counter++;
 					electrons--;
@@ -194,30 +187,28 @@ public class atombuilder extends JFrame implements ActionListener{
 		for (shell = 1; shell <= period; shell++) {
 			System.out.println("Amount of Electrons in Shell " + shell + ": " + currentShell[shell]);
 		}
-		
-				
+
 		return remainingElectrons;
 	}
 
-	public static Atom searchForAtomIndex(ArrayList<Atom> populatedAtomList, String indexStr) { //searching by atomic number, proton count, electron count
+	public static Atom searchForAtomIndex(ArrayList<Atom> populatedAtomList, String indexStr) { // searching by atomic number, proton count, or electron count
 		try {
 			int index = Integer.parseInt(indexStr);
 			return populatedAtomList.get(index);
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
-	
+
 	public static Atom searchForAtomName(ArrayList<Atom> populatedAtomList, String name) {
 		for (Atom currentAtom : populatedAtomList) {
-			if (currentAtom.name.equalsIgnoreCase(name)) {
+			if (currentAtom.abbreviation.equalsIgnoreCase(name)) {
 				return currentAtom;
 			}
 		}
 		return null;
 	}
-	
+
 	public static Atom searchForAtomAbbreviation(ArrayList<Atom> populatedAtomList, String abbreviation) {
 		for (Atom currentAtom : populatedAtomList) {
 			if (currentAtom.abbreviation.equalsIgnoreCase(abbreviation)) {
@@ -226,13 +217,13 @@ public class atombuilder extends JFrame implements ActionListener{
 		}
 		return null;
 	}
-	
+
 	public static Atom searchForAtomNeutrons(ArrayList<Atom> populatedAtomList, String neutronsStr) {
 		int neutrons = Integer.parseInt(neutronsStr);
 		if (neutrons == 0) {
-			return populatedAtomList.get(1); //ignores neutronium
+			return populatedAtomList.get(1); // ignores neutronium
 		} else {
-			for (Atom currentAtom : populatedAtomList) { 
+			for (Atom currentAtom : populatedAtomList) {
 				if (currentAtom.neutrons == neutrons) {
 					return currentAtom;
 				}
@@ -240,7 +231,7 @@ public class atombuilder extends JFrame implements ActionListener{
 		}
 		return null;
 	}
-	
+
 	public static Atom searchForAtomCAS(ArrayList<Atom> populatedAtomList, String casStr) {
 		int CAS = Integer.parseInt(casStr.replace("-", ""));
 		for (Atom currentAtom : populatedAtomList) {
@@ -250,100 +241,276 @@ public class atombuilder extends JFrame implements ActionListener{
 		}
 		return null;
 	}
+
+	// ------- GUI STUFF -------
+	
+	// left side
+	JLabel AtomSearch;
+	JLabel abbreviationLabel;
+	JTextField abbreviationField;
+	JLabel nameLabel;
+	JTextField nameField;
+	JLabel atomicNumberLabel;
+	JTextField atomicNumberField;
+	JLabel CASLabel;
+	JTextField CASField;
+	JLabel protonsLabel;
+	JTextField protonsField;
+	JLabel neutronsLabel;
+	JTextField neutronsField;
+	JLabel electronsLabel;
+	JTextField electronsField;
+
+	// top middle
+	JLabel fullNameLabel;
+	JLabel isotopeLabel; //TODO show and hide if isotope
+	// TODO visuals and stuff
+
+	// bottom middle
+	JTextField nosearchProtonField;
+	JTextField nosearchNeutronField;
+	JTextField nosearchElectronField;
+	JButton addProtonButton; // TODO adding/removing protons needs to search for new atom name
+	JButton addElectronButton;
+	JButton addNeutronButton;
+	JButton removeProtonButton;
+	JButton removeNeutronButton;
+	JButton removeElectronButton;
+
+	// right side
+	JTextArea infoTextArea;
+
+	private ArrayList<Atom> periodic;
+	private Atom displayAtom;
 	
 	atombuilder() {
-		  ArrayList<Atom> periodic = new ArrayList<Atom>();
-		  populateAtomList(periodic);
-		  Atom displayAtom = periodic.get(1);
-		  
-	      GridBagConstraints layoutConst = null;
+		periodic = new ArrayList<Atom>();
+		populateAtomList(periodic);
+		displayAtom = periodic.get(1);
+		
+		setTitle("Atom Builder");
 
-	      setTitle("Atom Builder");
+		GridBagConstraints layoutConst = null;
 
-	      searchLabel = new JLabel("Atom abbreviation:");
-	      infoLabel = new JLabel("atom info here");
+		// left side
+		AtomSearch = new JLabel("<html><u>Atom Search</u></html>");
+		AtomSearch.setFont(new Font("Verdana", Font.BOLD, 15));
+		
+		abbreviationLabel = new JLabel("Abbreviation");
+		abbreviationField = new JTextField(10);
+		/*
+		abbreviationField.setEditable(true);
+		abbreviationField.setText("");
+		abbreviationField.addActionListener(e -> {
+			Atom foundAtom = atombuilder.searchForAtomAbbreviation(periodic, abbreviationField.getText());
+			if (foundAtom != null) {
+				displayAtom = foundAtom;
+			} else {
+				abbreviationField.setText("Could not find");
+			}
+		});
+		*/
+		nameLabel = new JLabel("Name");
+		nameField = new JTextField(10);
+		atomicNumberLabel = new JLabel("Atomic Number");
+		atomicNumberField = new JTextField(10);
+		CASLabel = new JLabel("CAS");
+		CASField = new JTextField(10);
+		protonsLabel = new JLabel("Protons");
+		protonsField = new JTextField(10);
+		neutronsLabel = new JLabel("Neutrons");
+		neutronsField = new JTextField(10);
+		electronsLabel = new JLabel("Electrons");
+		electronsField = new JTextField(10);
 
-	      searchField = new JTextField(15);
-	      searchField.setEditable(true);
-	      searchField.setText("");
-	      searchField.addActionListener(e -> {
-	    	  nameLabel.setText(atombuilder.searchForAtomAbbreviation(periodic, searchField.getText()).name);
-	      });
+		// top middle
+		fullNameLabel = new JLabel();
+		isotopeLabel = new JLabel();
 
-	      nameLabel = new JLabel("atom name");
-	      
-	      infoLabel = new JLabel("auxiliary info");
-	      
-	      electronButton = new JButton("Add electron(1)");
-	      electronButton.addActionListener(e -> {
-	    	  displayAtom.updateElectrons(1);
-	    	  electronButton.setText("Add electron(" + displayAtom.electrons + ")");
-	      });
+		// bottom middle
+		nosearchProtonField = new JTextField(4);
+		addProtonButton = new JButton("Add proton");
+		addProtonButton.addActionListener(e -> {
+			displayAtom.updateProtons(1);
+			updateInfo(displayAtom);
+		});
+		removeProtonButton = new JButton("Remove proton");
+		removeProtonButton.addActionListener(e -> {
+			displayAtom.updateProtons(-1);
+			updateInfo(displayAtom);
+		});
+		
+		nosearchNeutronField = new JTextField(4);
+		addNeutronButton = new JButton("Add neutron");
+		addNeutronButton.addActionListener(e -> {
+			displayAtom.updateNeutrons(1);
+			updateInfo(displayAtom);
+		});
+		removeNeutronButton = new JButton("Remove neutron");
+		removeNeutronButton.addActionListener(e -> {
+			displayAtom.updateNeutrons(-1);
+			updateInfo(displayAtom);
+		});
+		
+		nosearchElectronField = new JTextField(4);
+		addElectronButton = new JButton("Add electron");
+		addElectronButton.addActionListener(e -> {
+			displayAtom.updateElectrons(1);
+			updateInfo(displayAtom);
+		});
+		removeElectronButton = new JButton("Remove electron");
+		removeElectronButton.addActionListener(e -> {
+			displayAtom.updateElectrons(-1);
+			updateInfo(displayAtom);
+		});
+		
+		// right side
+		infoTextArea = new JTextArea();
 
-	      // Use a GridBagLayout
-	      setLayout(new GridBagLayout());
-	      layoutConst = new GridBagConstraints();
+		// assembling layout
+		setLayout(new GridBagLayout());
+		layoutConst = new GridBagConstraints();
+		layoutConst.gridx = 0;
+		layoutConst.gridy = 0;
+		//layoutConst.insets = new Insets(0,0,0,0);
+		
+		// left side
+		add(AtomSearch, layoutConst);
+		layoutConst.gridy++;
+		add(abbreviationLabel, layoutConst);
+		layoutConst.gridy++;
+		add(abbreviationField, layoutConst);
+		layoutConst.gridy++;
+		add(nameLabel, layoutConst);
+		layoutConst.gridy++;
+		add(nameField, layoutConst);
+		layoutConst.gridy++;
+		add(atomicNumberLabel, layoutConst);
+		layoutConst.gridy++;
+		add(atomicNumberField, layoutConst);
+		layoutConst.gridy++;
+		add(CASLabel, layoutConst);
+		layoutConst.gridy++;
+		add(CASField, layoutConst);
+		layoutConst.gridy++;
+		add(protonsLabel, layoutConst);
+		layoutConst.gridy++;
+		add(protonsField, layoutConst);
+		layoutConst.gridy++;
+		add(neutronsLabel, layoutConst);
+		layoutConst.gridy++;
+		add(neutronsField, layoutConst);
+		layoutConst.gridy++;
+		add(electronsLabel, layoutConst);
+		layoutConst.gridy++;
+		add(electronsField, layoutConst);
+		
+		// middle
+		layoutConst.gridx++;
+		layoutConst.gridy++;
+		add(nosearchProtonField, layoutConst);
+		layoutConst.gridy++;
+		add(addProtonButton, layoutConst);
+		layoutConst.gridy++;
+		add(removeProtonButton, layoutConst);
+		
+		layoutConst.gridx++;
+		layoutConst.gridy-= 2;
+		add(nosearchNeutronField, layoutConst);
+		layoutConst.gridy++;
+		add(addNeutronButton, layoutConst);
+		layoutConst.gridy++;
+		add(removeNeutronButton, layoutConst);
+		
+		layoutConst.gridy -= 4; //fit in top middle label
+		add(isotopeLabel, layoutConst);
+		layoutConst.gridy--;
+		add(fullNameLabel, layoutConst);
+		layoutConst.gridy += 5;
+		
+		layoutConst.gridx++;
+		layoutConst.gridy-= 2;
+		add(nosearchElectronField, layoutConst);
+		layoutConst.gridy++;
+		add(addElectronButton, layoutConst);
+		layoutConst.gridy++;
+		add(removeElectronButton, layoutConst);
+		
+		// right side
+		layoutConst.gridx++;
+		layoutConst.gridy = 0;
+		add(infoTextArea, layoutConst);
+		
+		updateInfo(displayAtom);
+	}
 
-	      // Specify component's grid location
-	      layoutConst.gridx = 0;
-	      layoutConst.gridy = 0;
+	public void updateInfo(Atom atom) { //TODO hide remove button if 0 count
+		// left side
+		abbreviationField.setText(atom.abbreviation);
+		nameField.setText(atom.name);
+		atomicNumberField.setText(Integer.toString(atom.protons));
+		CASField.setText(atom.casNumberStr());
+		protonsField.setText(Integer.toString(atom.protons));
+		neutronsField.setText(Integer.toString(atom.neutrons));
+		electronsField.setText(Integer.toString(atom.electrons));
 
-	      // 10 pixels of padding around component
-	      layoutConst.insets = new Insets(10, 10, 10, 10);
+		// top middle
+		fullNameLabel.setText(atom.isotopeNameStr());
+		// TODO visuals and stuff
 
-	      // Add component using the specified constraints
-	      add(searchLabel, layoutConst);
+		// bottom middle
+		nosearchProtonField.setText(Integer.toString(atom.protons));
+		nosearchNeutronField.setText(Integer.toString(atom.neutrons));
+		nosearchElectronField.setText(Integer.toString(atom.electrons));
+		if (displayAtom.protons < 1) { 
+			removeProtonButton.setVisible(false);
+		} else {
+			removeProtonButton.setVisible(true);
+		}
+		if (displayAtom.neutrons < 1) { 
+			removeNeutronButton.setVisible(false);
+		} else {
+			removeNeutronButton.setVisible(true);
+		}
+		if (displayAtom.electrons < 1) { 
+			removeElectronButton.setVisible(false);
+		} else {
+			removeElectronButton.setVisible(true);
+		}
+		
+		// right side
+		infoTextArea.setText("Group: " + atom.getGroup() + 
+				   "\nPeriod: " + atom.period +
+				   "\nBlock: " + atom.getBlock() + " block" + 
+				   "\nSeries: " + atom.getSeriesString() + 
+				   "\nWeight: " + atom.getWeight() + 
+				   "\nCharge: " + atom.getCharge() + 
+				   "\nMelting Point: " + atom.meltingPoint + 
+				   "\nBoiling Point: " + atom.boilingPoint);
+	}
 
-	      layoutConst = new GridBagConstraints();
-	      layoutConst.gridx = 1;
-	      layoutConst.gridy = 0;
-	      layoutConst.insets = new Insets(10, 10, 10, 10);
-	      add(searchField, layoutConst);
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		// what huh
+	}
+	
+	public static void main(String[] args) {
+		atombuilder myFrame = new atombuilder();
 
-	      layoutConst = new GridBagConstraints();
-	      layoutConst.gridx = 0;
-	      layoutConst.gridy = 1;
-	      layoutConst.insets = new Insets(10, 10, 10, 10);
-	      add(nameLabel, layoutConst);
-	      
-	      layoutConst = new GridBagConstraints();
-	      layoutConst.gridx = 0;
-	      layoutConst.gridy = 1;
-	      layoutConst.insets = new Insets(60, 10, 10, 10);
-	      add(electronButton, layoutConst);
-	   }
+		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		myFrame.pack();
+		myFrame.setVisible(true);
 
-	   @Override
-	   public void actionPerformed(ActionEvent event) {
-		   //what huh
-	   }
-	   
-	   //-------------------------------------------------------------------------------------------------------------------------------
-	   
-	   public static void main (String[] args) {
-			ArrayList<Atom> periodic = new ArrayList<Atom>();
-			atombuilder.populateAtomList(periodic);
-			
-			ArrayList<Atom> savedAtoms = new ArrayList<Atom>();
-			
-			Atom displayAtom = periodic.get(1);
-
-			atombuilder myFrame = new atombuilder();
-
-		    myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		    myFrame.pack();
-		    myFrame.setVisible(true);
-			
-			System.out.println("getShellElectrons TEST CASES");
-			System.out.println("Amount of electrons in first orbital (1 electron): " + atombuilder.getShellElectrons(1,1));
-			System.out.println("Amount of electrons in first orbital (2 electrons): " + atombuilder.getShellElectrons(2,1));
-			System.out.println("Amount of electrons in first orbital (3 electrons): " + atombuilder.getShellElectrons(3,1));
-			System.out.println("Amount of electrons in first orbital (100 electrons): " + atombuilder.getShellElectrons(100,1));
-			System.out.println("Amount of electrons in second orbital (1 electron): " + atombuilder.getShellElectrons(1,2));
-			System.out.println("Amount of electrons in second orbital (10 electrons): " + atombuilder.getShellElectrons(10,2));
-			System.out.println("Amount of electrons in second orbital (7 electrons): " + atombuilder.getShellElectrons(7,2));
-			System.out.println("Amount of electrons in second orbital (40 electrons): " + atombuilder.getShellElectrons(40,2));
-			System.out.println("Amount of electrons in fourth orbital (130 electrons): " + atombuilder.getShellElectrons(130,4));
-			System.out.println("Amount of electrons in seventh orbital (250 electrons): " + atombuilder.getShellElectrons(250,7));
+		System.out.println("getShellElectrons TEST CASES");
+		System.out.println("Amount of electrons in first orbital (1 electron): " + atombuilder.getShellElectrons(1, 1));
+		System.out.println("Amount of electrons in first orbital (2 electrons): " + atombuilder.getShellElectrons(2, 1));
+		System.out.println("Amount of electrons in first orbital (3 electrons): " + atombuilder.getShellElectrons(3, 1));
+		System.out.println("Amount of electrons in first orbital (100 electrons): " + atombuilder.getShellElectrons(100, 1));
+		System.out.println("Amount of electrons in second orbital (1 electron): " + atombuilder.getShellElectrons(1, 2));
+		System.out.println("Amount of electrons in second orbital (10 electrons): " + atombuilder.getShellElectrons(10, 2));
+		System.out.println("Amount of electrons in second orbital (7 electrons): " + atombuilder.getShellElectrons(7, 2));
+		System.out.println("Amount of electrons in second orbital (40 electrons): " + atombuilder.getShellElectrons(40, 2));
+		System.out.println("Amount of electrons in fourth orbital (130 electrons): " + atombuilder.getShellElectrons(130, 4));
+		System.out.println("Amount of electrons in seventh orbital (250 electrons): " + atombuilder.getShellElectrons(250, 7));
 	}
 }
