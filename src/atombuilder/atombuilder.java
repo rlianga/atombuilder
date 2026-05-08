@@ -184,6 +184,41 @@ public class atombuilder extends JFrame implements ActionListener {
 		return null;
 	}
 
+	public static String electronConfiguration(int electrons) {
+
+		String[] orbitals = {
+			"1s", "2s", "2p", "3s", "3p",
+			"4s", "3d", "4p", "5s", "4d",
+			"5p", "6s", "4f", "5d", "6p",
+			"7s", "5f", "6d", "7p"
+		};
+
+		int[] maxElectrons = {
+			2, 2, 6, 2, 6,
+			2, 10, 6, 2, 10,
+			6, 2, 14, 10, 6,
+			2, 14, 10, 6
+		};
+
+		StringBuilder result = new StringBuilder();
+
+		for (int i = 0; i < orbitals.length; i++) {
+
+			if (electrons <= 0) break;
+
+			int toFill = Math.min(electrons, maxElectrons[i]);
+
+			result.append(orbitals[i])
+            	.append("^")
+            	.append(toFill)
+            	.append(" ");
+
+			electrons -= toFill;
+		}
+
+		return result.toString().trim();
+	}
+
 	// ------- GUI STUFF -------
 	
 	// left side
@@ -544,6 +579,7 @@ public class atombuilder extends JFrame implements ActionListener {
 				   "\nCharge: " + displayAtom.getCharge() + 
 				   "\nMelting Point: " + ((isIsotope || displayAtom.getCharge() != 0) ? "?" : displayAtom.meltingPoint) + 
 				   "\nBoiling Point: " + ((isIsotope || displayAtom.getCharge() != 0) ? "?" : displayAtom.boilingPoint) + 
+				   "\nElectron Configuration: " + AtomBuilder.electronConfiguration(displayAtom.electrons) + 
 				   "\n\t\t  "); //spacing to get rid of weird shifting
 		
 		errorLabel.setVisible(false);
