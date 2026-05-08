@@ -133,64 +133,6 @@ public class atombuilder extends JFrame implements ActionListener {
 		list.add(new Atom("Oganesson", 118, 176, 18, 7, atomSeries.Noble_gas, 54100001, 0, 0, "Og"));
 	}
 
-	public static int getShellElectrons(int electrons, int shell) { // TODO should return # of electrons in corresponding shell
-		int period = 6;
-		int totalElectrons = 79;
-		int remainingElectrons = electrons;
-		int totalAddedElectrons = 0;
-		int counter = 0;
-
-		int[] currentShell = new int[period + 1];
-
-		for (shell = 1; shell <= period; shell++) {
-			// This IF statement is where the electron incrementing begins
-			if (electrons < totalElectrons) {
-				electrons = (int) (2 * Math.pow(shell, 2));
-				currentShell[shell] = electrons;
-			}
-			totalAddedElectrons += currentShell[shell];
-
-			// This if statement ensures that electron count does not go past total electron count
-			if (totalAddedElectrons > totalElectrons) {
-				// Decreases amount of electrons in a shell
-				for (int i = 0; totalAddedElectrons > totalElectrons; i++) {
-					totalAddedElectrons -= currentShell[shell];
-					electrons = (int) (2 * Math.pow((shell - i), 2));
-					currentShell[shell] = electrons;
-					totalAddedElectrons += currentShell[shell];
-				}
-
-				// This ensures that the last shell contains at least 1 electron and does not go past total electron count
-				if (shell == period && totalAddedElectrons < totalElectrons) {
-					electrons = 0;
-					totalAddedElectrons -= currentShell[shell];
-					currentShell[shell] = electrons;
-					while (shell == period && totalAddedElectrons < totalElectrons) {
-						electrons++;
-						currentShell[shell] = electrons;
-						totalAddedElectrons++;
-					}
-				}
-
-				// If last shell contains more than 2 electrons, remove excessive electrons and
-				// add it to counter, which will later be added to the shell before the last
-				while (shell == period && totalAddedElectrons == totalElectrons && currentShell[shell] > 2) {
-					counter++;
-					electrons--;
-					currentShell[shell] = electrons;
-				}
-			}
-			if (shell == period) {
-				currentShell[shell - 1] += counter;
-			}
-		}
-		for (shell = 1; shell <= period; shell++) {
-			System.out.println("Amount of Electrons in Shell " + shell + ": " + currentShell[shell]);
-		}
-
-		return remainingElectrons;
-	}
-
 	public static Atom searchForAtomIndex(ArrayList<Atom> populatedAtomList, String indexStr) { // searching by atomic number, proton count, or electron count
 		try {
 			int index = Integer.parseInt(indexStr);
