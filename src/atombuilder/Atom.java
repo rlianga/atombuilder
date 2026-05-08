@@ -13,7 +13,7 @@ public class Atom {
 	double boilingPoint;
 	String abbreviation; //procedural unless overridden
 
-	public Atom (String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint, String abbreviation) { 
+	public Atom(String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint, String abbreviation) { 
 		this.name = name;
 		this.protons = protons; 
 		this.neutrons = neutrons; 
@@ -28,8 +28,23 @@ public class Atom {
 	}
 	
 	//without given abbreviation, makes it the first letter
-	public Atom (String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint) {
+	public Atom(String name, int protons, int neutrons, int group, int period, atomSeries series, int casNumber, double meltingPoint, double boilingPoint) {
 		this(name, protons, neutrons, group, period, series, casNumber, meltingPoint, boilingPoint, name.substring(0,1));
+	}
+	
+	//copy constructor
+	public Atom(Atom atom) { 
+		this.name = atom.name;
+		this.protons = atom.protons; 
+		this.neutrons = atom.neutrons; 
+		this.electrons = atom.protons;
+		this.group = atom.group;
+		this.period = atom.period;
+		this.series = atom.series;
+		this.casNumber = atom.casNumber;
+		this.meltingPoint = atom.meltingPoint;
+		this.boilingPoint = atom.boilingPoint;
+		this.abbreviation = atom.abbreviation;
 	}
 	
 	public String getGroup() {
@@ -44,7 +59,7 @@ public class Atom {
 		}
 	}
 
-	public char getBlock () {
+	public char getBlock() {
 		if (this.group == 0) {
 			return 'f';
 		} else if (3 <= this.group || this.group <= 12) {
@@ -85,6 +100,7 @@ public class Atom {
 		return this.name + "-" + (this.protons + this.neutrons);
 	}
 	
+	//re-adds the dashes that are not stored in the CAS number (int) field
 	public String casNumberStr() {
 		String returnStr = Integer.toString(this.casNumber);
 		int len = returnStr.length();
@@ -95,7 +111,7 @@ public class Atom {
 		return this.protons - this.electrons;
 	}
 	
-	public double getWeight () {
+	public double getWeight() {
 		return (this.protons * 1.00727) + (this.neutrons * 1.00866) + (this.electrons * 0.000549); //in AMU
 	}
 	
@@ -109,17 +125,6 @@ public class Atom {
 	
 	public void updateNeutrons(int neutronCount) {
 		this.neutrons += neutronCount;
-	}
-	
-	public String getAtomInfoString() {
-		return this.abbreviation +
-				 "\nGroup: " + this.getGroup() + 
-				 "\nPeriod: " + this.period + 
-				 "\nBlock: " + this.getBlock() + " block" +
-				 "\nSeries: " + this.getSeriesString() + 
-				 "\nMelting Point: " + this.meltingPoint + 
-			 	 "\nBoiling Point: " + this.boilingPoint + 
-			 	 "\nCAS: " + this.casNumber;
 	}
 
 }
