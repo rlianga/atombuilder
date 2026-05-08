@@ -211,12 +211,12 @@ public class atombuilder extends JFrame implements ActionListener {
 			result.append(orbitals[i])
             	.append("^")
             	.append(toFill)
-            	.append(" ");
+            	.append("\n");
 
 			electrons -= toFill;
 		}
 
-		return result.toString().trim();
+		return "\n" + result.toString().trim();
 	}
 
 	// ------- GUI STUFF -------
@@ -579,7 +579,7 @@ public class atombuilder extends JFrame implements ActionListener {
 				   "\nCharge: " + displayAtom.getCharge() + 
 				   "\nMelting Point: " + ((isIsotope || displayAtom.getCharge() != 0) ? "?" : displayAtom.meltingPoint) + 
 				   "\nBoiling Point: " + ((isIsotope || displayAtom.getCharge() != 0) ? "?" : displayAtom.boilingPoint) + 
-				   "\nElectron Configuration: " + AtomBuilder.electronConfiguration(displayAtom.electrons) + 
+				   "\nElectron Configuration: " + ((isIsotope || displayAtom.getCharge() != 0) ? "?" : electronConfiguration(displayAtom.electrons)) + 
 				   "\n\t\t  "); //spacing to get rid of weird shifting
 		
 		errorLabel.setVisible(false);
